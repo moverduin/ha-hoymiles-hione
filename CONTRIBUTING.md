@@ -91,6 +91,13 @@ skips the Home Assistant tests automatically), which is handy for quick iteratio
 Every user-facing string lives in `translations/en.json`. Copy new keys to every other language
 file. If you add a language, translate all keys of `en.json`.
 
+## Dependency updates (maintainers)
+
+Dependabot opens one grouped pull request per week for GitHub Actions and one for Python
+packages. Patch and minor updates are merged automatically once the required checks (Ruff,
+Pytest, Hassfest, HACS) pass; major updates get a comment and wait for manual review. If a
+Dependabot pull request is red because it is out of date, comment `@dependabot rebase`.
+
 ## Releasing (maintainers)
 
 1. Update `version` in `manifest.json` and move the *Unreleased* notes in `CHANGELOG.md` to a new version.
