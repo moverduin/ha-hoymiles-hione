@@ -1,0 +1,47 @@
+name: Device report
+description: Tell us which model/firmware works (or not), or share a register finding.
+labels: ["device report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports like this help other users and keep the register map accurate.
+        Please do not paste your serial number.
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      placeholder: "HiOne 8 kWh x2"
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware / hardware version
+      description: From the device page in Home Assistant.
+    validations:
+      required: true
+  - type: dropdown
+    id: layout
+    attributes:
+      label: Hardware generation selected
+      options:
+        - G3
+        - G1/G2
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options:
+        - Everything works
+        - Works partly
+        - Does not work
+    validations:
+      required: true
+  - type: textarea
+    id: findings
+    attributes:
+      label: Findings
+      description: For example a register with a different scale or sign than documented, or a register that is not supported.

@@ -1,0 +1,81 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "fault": { "default": "mdi:alert-circle-outline" },
+      "battery_connected": { "default": "mdi:battery-sync" },
+      "meter_connected": { "default": "mdi:meter-electric" }
+    },
+    "number": {
+      "self_use_reserve_soc": { "default": "mdi:battery-lock" },
+      "backup_reserve_soc": { "default": "mdi:battery-lock" },
+      "economic_reserve_soc": { "default": "mdi:battery-lock" },
+      "force_charge_target_soc": { "default": "mdi:battery-charging-high" },
+      "force_charge_power": { "default": "mdi:battery-arrow-up" },
+      "force_discharge_target_soc": { "default": "mdi:battery-low" },
+      "force_discharge_power": { "default": "mdi:battery-arrow-down" },
+      "max_soc": { "default": "mdi:battery-arrow-up-outline" },
+      "min_soc": { "default": "mdi:battery-arrow-down-outline" }
+    },
+    "select": {
+      "ems_mode_control": {
+        "default": "mdi:home-battery",
+        "state": {
+          "self_use": "mdi:home-lightning-bolt",
+          "economic": "mdi:cash",
+          "backup": "mdi:battery-heart",
+          "off_grid": "mdi:transmission-tower-off",
+          "force_charge": "mdi:battery-charging-high",
+          "force_discharge": "mdi:battery-arrow-down",
+          "peak_shaving": "mdi:chart-bell-curve",
+          "time_of_use": "mdi:clock-outline"
+        }
+      }
+    },
+    "sensor": {
+      "status": { "default": "mdi:information-outline" },
+      "battery_state": {
+        "default": "mdi:battery",
+        "state": {
+          "charging": "mdi:battery-charging",
+          "discharging": "mdi:battery-arrow-down",
+          "standby": "mdi:battery-clock"
+        }
+      },
+      "ems_mode": { "default": "mdi:home-battery" },
+      "meter_status": { "default": "mdi:meter-electric" },
+      "battery_soh": { "default": "mdi:battery-heart-variant" },
+      "battery_power": { "default": "mdi:home-battery" },
+      "battery_charge_power": { "default": "mdi:battery-arrow-up" },
+      "battery_discharge_power": { "default": "mdi:battery-arrow-down" },
+      "grid_power": { "default": "mdi:transmission-tower" },
+      "grid_power_l1": { "default": "mdi:transmission-tower" },
+      "grid_power_l2": { "default": "mdi:transmission-tower" },
+      "grid_power_l3": { "default": "mdi:transmission-tower" },
+      "load_power": { "default": "mdi:home-lightning-bolt" },
+      "pv_power": { "default": "mdi:solar-power" },
+      "pv1_power": { "default": "mdi:solar-power" },
+      "pv2_power": { "default": "mdi:solar-power" },
+      "pv3_power": { "default": "mdi:solar-power" },
+      "pv4_power": { "default": "mdi:solar-power" },
+      "battery_charge_energy_total": { "default": "mdi:battery-plus" },
+      "battery_discharge_energy_total": { "default": "mdi:battery-minus" },
+      "battery_charge_energy_today": { "default": "mdi:battery-plus" },
+      "battery_discharge_energy_today": { "default": "mdi:battery-minus" },
+      "grid_import_energy_total": { "default": "mdi:transmission-tower-import" },
+      "grid_export_energy_total": { "default": "mdi:transmission-tower-export" },
+      "grid_import_energy_today": { "default": "mdi:transmission-tower-import" },
+      "grid_export_energy_today": { "default": "mdi:transmission-tower-export" },
+      "load_energy_total": { "default": "mdi:home-lightning-bolt-outline" },
+      "load_energy_today": { "default": "mdi:home-lightning-bolt-outline" },
+      "pv_energy_total": { "default": "mdi:solar-power-variant" },
+      "pv_energy_today": { "default": "mdi:solar-power-variant" },
+      "active_faults": { "default": "mdi:alert-circle-outline" },
+      "battery_fault_code": { "default": "mdi:alert-octagon-outline" },
+      "sw_fault": { "default": "mdi:alert-octagon-outline" },
+      "hw_fault": { "default": "mdi:alert-octagon-outline" }
+    }
+  },
+  "services": {
+    "set_ems": { "service": "mdi:home-battery" }
+  }
+}

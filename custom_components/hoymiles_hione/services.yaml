@@ -1,0 +1,76 @@
+set_ems:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: hoymiles_hione
+    ems_mode:
+      required: false
+      selector:
+        select:
+          translation_key: ems_mode
+          options:
+            - self_use
+            - economic
+            - backup
+            - force_charge
+            - force_discharge
+            - peak_shaving
+            - time_of_use
+    self_use_reserve_soc:
+      required: false
+      selector:
+        number:
+          min: 10
+          max: 100
+          unit_of_measurement: "%"
+          mode: box
+    backup_reserve_soc:
+      required: false
+      selector:
+        number:
+          min: 60
+          max: 100
+          unit_of_measurement: "%"
+          mode: box
+    economic_reserve_soc:
+      required: false
+      selector:
+        number:
+          min: 10
+          max: 100
+          unit_of_measurement: "%"
+          mode: box
+    force_charge_target_soc:
+      required: false
+      selector:
+        number:
+          min: 10
+          max: 100
+          unit_of_measurement: "%"
+          mode: box
+    force_charge_power:
+      required: false
+      selector:
+        number:
+          min: 10
+          max: 100
+          unit_of_measurement: "%"
+          mode: box
+    force_discharge_target_soc:
+      required: false
+      selector:
+        number:
+          min: 10
+          max: 100
+          unit_of_measurement: "%"
+          mode: box
+    force_discharge_power:
+      required: false
+      selector:
+        number:
+          min: 10
+          max: 100
+          unit_of_measurement: "%"
+          mode: box

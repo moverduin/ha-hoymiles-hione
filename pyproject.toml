@@ -1,0 +1,19 @@
+[project]
+name = "ha-hoymiles-hione"
+version = "0.1.0"
+description = "Home Assistant custom integration for Hoymiles HiOne home batteries over Modbus TCP"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.13"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+source = ["custom_components.hoymiles_hione"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

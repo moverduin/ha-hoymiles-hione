@@ -1,0 +1,476 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Verbind je Hoymiles HiOne",
+        "description": "Vul het adres in van de Hoymiles DTS / Modbus TCP-gateway.\n\n**Er kan maar één Modbus-client tegelijk met de HiOne praten.** Verwijder eerst een `modbus:` YAML-hub, EVCC, Node-RED of andere tool die met dezelfde gateway verbindt, anders raken de antwoorden door elkaar.",
+        "data": {
+          "host": "Host",
+          "port": "Poort",
+          "unit_id": "Modbus unit-ID",
+          "framer": "Protocol",
+          "layout": "Hardwaregeneratie"
+        },
+        "data_description": {
+          "host": "IP-adres of hostnaam van de Modbus-gateway (DTS-stick of RS485-converter).",
+          "port": "Meestal 502.",
+          "unit_id": "Meestal 1.",
+          "framer": "Gebruik Modbus TCP, tenzij je RS485-gateway in transparante modus (RTU over TCP) staat.",
+          "layout": "De HiOne gebruikt G3. Kies G1/G2 alleen voor oudere Hoymiles hybride omvormers."
+        }
+      },
+      "reconfigure": {
+        "title": "Verbinding wijzigen",
+        "description": "Pas de verbindingsgegevens aan. Het apparaat moet hetzelfde blijven.",
+        "data": {
+          "host": "Host",
+          "port": "Poort",
+          "unit_id": "Modbus unit-ID",
+          "framer": "Protocol",
+          "layout": "Hardwaregeneratie"
+        },
+        "data_description": {
+          "host": "IP-adres of hostnaam van de Modbus-gateway (DTS-stick of RS485-converter).",
+          "port": "Meestal 502.",
+          "unit_id": "Meestal 1.",
+          "framer": "Gebruik Modbus TCP, tenzij je RS485-gateway in transparante modus (RTU over TCP) staat.",
+          "layout": "De HiOne gebruikt G3. Kies G1/G2 alleen voor oudere Hoymiles hybride omvormers."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbinden mislukt. Controleer het adres en zorg dat er geen andere Modbus-client verbonden is.",
+      "not_supported": "Het apparaat antwoordt, maar niet als een Hoymiles-opslagsysteem. Controleer het unit-ID.",
+      "unknown": "Onverwachte fout, zie de logs."
+    },
+    "abort": {
+      "already_configured": "Dit apparaat is al ingesteld.",
+      "reconfigure_successful": "De verbinding is bijgewerkt.",
+      "wrong_device": "Dit adres hoort bij een ander apparaat."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opties",
+        "description": "**Schrijftoegang** voegt bediening toe voor de EMS-modus en batterij-instellingen, en activeert de actie `hoymiles_hione.set_ems`.\n\nSchrijven verandert hoe je batterij laadt uit en ontlaadt naar het net. Elke schrijfactie wordt opgeslagen in het flashgeheugen van het apparaat; wijzig instellingen dus alleen als het nodig is (niet elke paar seconden). Gebruik op eigen risico.",
+        "data": {
+          "scan_interval": "Uitleesinterval",
+          "enable_controls": "Schrijftoegang inschakelen (bediening)"
+        },
+        "data_description": {
+          "scan_interval": "Hoe vaak alle waarden worden uitgelezen. 30 seconden is een goede standaard.",
+          "enable_controls": "Standaard uit. Lees eerst de veiligheidsinformatie in de README."
+        }
+      }
+    }
+  },
+  "selector": {
+    "framer": {
+      "options": {
+        "tcp": "Modbus TCP",
+        "rtu_over_tcp": "Modbus RTU over TCP"
+      }
+    },
+    "layout": {
+      "options": {
+        "g3": "G3 (HiOne, 32-bit batterijvermogen)",
+        "g1_g2": "G1/G2 (16-bit batterijvermogen)"
+      }
+    },
+    "ems_mode": {
+      "options": {
+        "self_use": "Zelfverbruik",
+        "economic": "Economisch",
+        "backup": "Back-up",
+        "force_charge": "Geforceerd laden",
+        "force_discharge": "Geforceerd ontladen",
+        "peak_shaving": "Peak shaving",
+        "time_of_use": "Tijdschema (TOU)"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "fault": {
+        "name": "Storing"
+      },
+      "battery_connected": {
+        "name": "Batterij verbonden"
+      },
+      "meter_connected": {
+        "name": "Meter verbonden"
+      }
+    },
+    "number": {
+      "self_use_reserve_soc": {
+        "name": "Reserve zelfverbruik"
+      },
+      "backup_reserve_soc": {
+        "name": "Reserve back-up"
+      },
+      "economic_reserve_soc": {
+        "name": "Reserve economische modus"
+      },
+      "force_charge_target_soc": {
+        "name": "Laaddoel geforceerd laden"
+      },
+      "force_charge_power": {
+        "name": "Vermogen geforceerd laden"
+      },
+      "force_discharge_target_soc": {
+        "name": "Ontlaadgrens geforceerd ontladen"
+      },
+      "force_discharge_power": {
+        "name": "Vermogen geforceerd ontladen"
+      },
+      "max_soc": {
+        "name": "Maximaal laadniveau"
+      },
+      "min_soc": {
+        "name": "Minimaal laadniveau"
+      }
+    },
+    "select": {
+      "ems_mode_control": {
+        "name": "EMS-modus",
+        "state": {
+          "self_use": "Zelfverbruik",
+          "economic": "Economisch",
+          "backup": "Back-up",
+          "off_grid": "Volledig off-grid",
+          "force_charge": "Geforceerd laden",
+          "force_discharge": "Geforceerd ontladen",
+          "peak_shaving": "Peak shaving",
+          "time_of_use": "Tijdschema (TOU)"
+        }
+      }
+    },
+    "sensor": {
+      "status": {
+        "name": "Status",
+        "state": {
+          "power_init": "Opstarten",
+          "standby": "Stand-by",
+          "grid_on_test": "Nettest",
+          "on_grid": "Netgekoppeld",
+          "fault": "Storing",
+          "off_grid": "Off-grid",
+          "bypass": "Bypass"
+        }
+      },
+      "battery_state": {
+        "name": "Batterijstatus",
+        "state": {
+          "standby": "Stand-by",
+          "charging": "Laden",
+          "discharging": "Ontladen"
+        }
+      },
+      "ems_mode": {
+        "name": "EMS-modus",
+        "state": {
+          "self_use": "Zelfverbruik",
+          "economic": "Economisch",
+          "backup": "Back-up",
+          "off_grid": "Volledig off-grid",
+          "force_charge": "Geforceerd laden",
+          "force_discharge": "Geforceerd ontladen",
+          "peak_shaving": "Peak shaving",
+          "time_of_use": "Tijdschema (TOU)"
+        }
+      },
+      "meter_status": {
+        "name": "Meterstatus",
+        "state": {
+          "offline": "Offline",
+          "online": "Online",
+          "hmid_online": "HMID verbonden",
+          "hmid_failure": "HMID-verbinding mislukt"
+        }
+      },
+      "battery_soc": {
+        "name": "Batterij laadniveau"
+      },
+      "battery_soh": {
+        "name": "Batterijconditie"
+      },
+      "battery_power": {
+        "name": "Batterijvermogen"
+      },
+      "battery_charge_power": {
+        "name": "Batterij laadvermogen"
+      },
+      "battery_discharge_power": {
+        "name": "Batterij ontlaadvermogen"
+      },
+      "battery_voltage": {
+        "name": "Batterijspanning"
+      },
+      "battery_current": {
+        "name": "Batterijstroom"
+      },
+      "battery_max_charge_current": {
+        "name": "Batterij max. laadstroom"
+      },
+      "battery_max_discharge_current": {
+        "name": "Batterij max. ontlaadstroom"
+      },
+      "battery_charge_cutoff_voltage": {
+        "name": "Batterij laad-eindspanning"
+      },
+      "battery_discharge_cutoff_voltage": {
+        "name": "Batterij ontlaad-eindspanning"
+      },
+      "battery_capacity": {
+        "name": "Batterijcapaciteit"
+      },
+      "cell_temperature_max": {
+        "name": "Celtemperatuur max."
+      },
+      "cell_temperature_min": {
+        "name": "Celtemperatuur min."
+      },
+      "grid_power": {
+        "name": "Netvermogen"
+      },
+      "grid_power_l1": {
+        "name": "Netvermogen L1"
+      },
+      "grid_power_l2": {
+        "name": "Netvermogen L2"
+      },
+      "grid_power_l3": {
+        "name": "Netvermogen L3"
+      },
+      "grid_voltage_l1": {
+        "name": "Netspanning L1"
+      },
+      "grid_voltage_l2": {
+        "name": "Netspanning L2"
+      },
+      "grid_voltage_l3": {
+        "name": "Netspanning L3"
+      },
+      "grid_current_l1": {
+        "name": "Netstroom L1"
+      },
+      "grid_current_l2": {
+        "name": "Netstroom L2"
+      },
+      "grid_current_l3": {
+        "name": "Netstroom L3"
+      },
+      "grid_frequency": {
+        "name": "Netfrequentie"
+      },
+      "load_power": {
+        "name": "Huisverbruik"
+      },
+      "pv_power": {
+        "name": "Zonnevermogen"
+      },
+      "inverter_power": {
+        "name": "Omvormervermogen"
+      },
+      "backup_power": {
+        "name": "Vermogen back-uppoort"
+      },
+      "inverter_grid_voltage_l1": {
+        "name": "Omvormer netspanning L1"
+      },
+      "inverter_grid_voltage_l2": {
+        "name": "Omvormer netspanning L2"
+      },
+      "inverter_grid_voltage_l3": {
+        "name": "Omvormer netspanning L3"
+      },
+      "inverter_grid_frequency": {
+        "name": "Omvormer netfrequentie"
+      },
+      "bus_voltage": {
+        "name": "DC-busspanning"
+      },
+      "inverter_temperature": {
+        "name": "Omvormertemperatuur"
+      },
+      "pv_heatsink_temperature": {
+        "name": "Temperatuur PV-koellichaam"
+      },
+      "battery_heatsink_temperature": {
+        "name": "Temperatuur batterijkoellichaam"
+      },
+      "internal_temperature": {
+        "name": "Interne temperatuur"
+      },
+      "battery_charge_energy_total": {
+        "name": "Batterij geladen totaal"
+      },
+      "battery_discharge_energy_total": {
+        "name": "Batterij ontladen totaal"
+      },
+      "grid_import_energy_total": {
+        "name": "Netafname totaal"
+      },
+      "grid_export_energy_total": {
+        "name": "Netteruglevering totaal"
+      },
+      "load_energy_total": {
+        "name": "Huisverbruik totaal"
+      },
+      "pv_energy_total": {
+        "name": "Zonne-energie totaal"
+      },
+      "battery_charge_energy_today": {
+        "name": "Batterij geladen vandaag"
+      },
+      "battery_discharge_energy_today": {
+        "name": "Batterij ontladen vandaag"
+      },
+      "grid_import_energy_today": {
+        "name": "Netafname vandaag"
+      },
+      "grid_export_energy_today": {
+        "name": "Netteruglevering vandaag"
+      },
+      "load_energy_today": {
+        "name": "Huisverbruik vandaag"
+      },
+      "pv_energy_today": {
+        "name": "Zonne-energie vandaag"
+      },
+      "active_faults": {
+        "name": "Actieve storingen",
+        "state_attributes": {
+          "faults": {
+            "name": "Storingen"
+          }
+        }
+      },
+      "battery_fault_code": {
+        "name": "Batterij storingscode"
+      },
+      "sw_fault": {
+        "name": "Software-storingscode"
+      },
+      "hw_fault": {
+        "name": "Hardware-storingscode"
+      },
+      "pv1_power": {
+        "name": "PV1 vermogen"
+      },
+      "pv1_voltage": {
+        "name": "PV1 spanning"
+      },
+      "pv1_current": {
+        "name": "PV1 stroom"
+      },
+      "pv2_power": {
+        "name": "PV2 vermogen"
+      },
+      "pv2_voltage": {
+        "name": "PV2 spanning"
+      },
+      "pv2_current": {
+        "name": "PV2 stroom"
+      },
+      "pv3_power": {
+        "name": "PV3 vermogen"
+      },
+      "pv3_voltage": {
+        "name": "PV3 spanning"
+      },
+      "pv3_current": {
+        "name": "PV3 stroom"
+      },
+      "pv4_power": {
+        "name": "PV4 vermogen"
+      },
+      "pv4_voltage": {
+        "name": "PV4 spanning"
+      },
+      "pv4_current": {
+        "name": "PV4 stroom"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Kan niet verbinden met de HiOne: {error}"
+    },
+    "update_failed": {
+      "message": "Fout bij uitlezen van de HiOne: {error}"
+    },
+    "no_data": {
+      "message": "De HiOne gaf geen bruikbare gegevens terug."
+    },
+    "controls_disabled": {
+      "message": "Schrijftoegang staat uit. Schakel deze eerst in bij de opties van de integratie."
+    },
+    "invalid_value": {
+      "message": "Ongeldige waarde: {error}"
+    },
+    "implausible_read": {
+      "message": "Er is niets geschreven omdat de huidige instellingen niet betrouwbaar uit te lezen waren: {error}"
+    },
+    "write_not_applied": {
+      "message": "De HiOne heeft de nieuwe instellingen niet overgenomen: {error}"
+    },
+    "write_failed": {
+      "message": "Schrijven naar de HiOne mislukt: {error}"
+    },
+    "entry_not_found": {
+      "message": "Geen Hoymiles HiOne-configuratie met ID {entry_id}."
+    },
+    "entry_not_loaded": {
+      "message": "De Hoymiles HiOne-configuratie {entry_id} is niet geladen."
+    },
+    "nothing_to_set": {
+      "message": "Geef minimaal één instelling op om te wijzigen."
+    }
+  },
+  "services": {
+    "set_ems": {
+      "name": "EMS-instellingen wijzigen",
+      "description": "Wijzig de EMS-modus en/of de bijbehorende instellingen in één schrijfactie. Het huidige blok wordt eerst gelezen en gecontroleerd; ongewijzigde waarden worden niet geschreven. Vereist schrijftoegang.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Apparaat",
+          "description": "De HiOne die je wilt wijzigen."
+        },
+        "ems_mode": {
+          "name": "EMS-modus",
+          "description": "Werkmodus. Volledig off-grid kan niet op afstand worden ingesteld."
+        },
+        "self_use_reserve_soc": {
+          "name": "Reserve zelfverbruik",
+          "description": "Laadniveau dat in zelfverbruik in reserve blijft. Hoger dan het huidige niveau laat de HiOne uit het net laden."
+        },
+        "backup_reserve_soc": {
+          "name": "Reserve back-up",
+          "description": "Laadniveau dat in back-upmodus in reserve blijft."
+        },
+        "economic_reserve_soc": {
+          "name": "Reserve economische modus",
+          "description": "Laadniveau dat in economische modus in reserve blijft."
+        },
+        "force_charge_target_soc": {
+          "name": "Laaddoel geforceerd laden",
+          "description": "Laden tot dit niveau in de modus geforceerd laden."
+        },
+        "force_charge_power": {
+          "name": "Vermogen geforceerd laden",
+          "description": "Laadvermogen bij geforceerd laden, als percentage van het maximum."
+        },
+        "force_discharge_target_soc": {
+          "name": "Ontlaadgrens geforceerd ontladen",
+          "description": "Ontladen tot dit niveau in de modus geforceerd ontladen."
+        },
+        "force_discharge_power": {
+          "name": "Vermogen geforceerd ontladen",
+          "description": "Ontlaadvermogen bij geforceerd ontladen, als percentage van het maximum."
+        }
+      }
+    }
+  }
+}

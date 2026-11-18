@@ -1,0 +1,70 @@
+name: Bug report
+description: Something does not work as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem! Please check the
+        [troubleshooting guide](https://github.com/moverduin/ha-hoymiles-hione/blob/main/docs/troubleshooting.md) first.
+
+        **Do not post your public IP address, passwords or serial numbers.** Diagnostics downloaded from
+        Home Assistant are already redacted.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Integration version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.11.1"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device model and firmware
+      description: Shown on the device page in Home Assistant (model, firmware, hardware version).
+      placeholder: "HiOne, V1.04.05 / H0.01.00"
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection
+      options:
+        - Hoymiles DTS stick (Modbus TCP)
+        - RS485 to Ethernet/Wi-Fi gateway (Modbus TCP)
+        - RS485 gateway in transparent mode (RTU over TCP)
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: single_client
+    attributes:
+      label: Single Modbus client
+      options:
+        - label: No other Modbus client (YAML `modbus:` hub, EVCC, Node-RED, ...) is connected to the same gateway.
+          required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: |
+        Device page → ⋮ → *Download diagnostics*, then drag the file here.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Debug log
+      description: |
+        Enable debug logging for the integration, reproduce the problem and paste the relevant lines.
+      render: text

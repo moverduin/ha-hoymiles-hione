@@ -1,0 +1,11 @@
+# Development configuration used by scripts/develop.
+default_config:
+
+homeassistant:
+  debug: true
+
+logger:
+  default: info
+  logs:
+    custom_components.hoymiles_hione: debug
+    pymodbus: info

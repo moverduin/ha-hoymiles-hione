@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Start a development Home Assistant with this integration loaded.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [[ ! -f "${PWD}/config/.HA_VERSION" ]]; then
+    mkdir -p "${PWD}/config"
+    hass --config "${PWD}/config" --script ensure_config
+fi
+
+# Load the integration from <repo>/custom_components without symlinks.
+export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
+
+hass --config "${PWD}/config" --debug
