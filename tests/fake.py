@@ -58,7 +58,7 @@ def sample_input() -> dict[int, int]:
 
 
 def sample_holding() -> dict[int, int]:
-    """Holding registers: EMS block, SOC limits and device information."""
+    """Return holding registers: EMS block, SOC limits and device information."""
     regs: dict[int, int] = {}
     _put(regs, 4300, [0, 30, 90, 70, 500, 30, 500, 30])
     _put(regs, 308, [100, 10])

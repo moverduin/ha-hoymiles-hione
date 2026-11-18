@@ -76,7 +76,11 @@ async def test_set_ems_writes_whole_block_with_fc16() -> None:
     """Mode changes write 4300-4306 in one request and are verified."""
     transport = FakeTransport()
     result = await _api(transport).async_set_ems(
-        {"ems_mode": "force_charge", "force_charge_target_soc": 95, "force_charge_power": 80}
+        {
+            "ems_mode": "force_charge",
+            "force_charge_target_soc": 95,
+            "force_charge_power": 80,
+        }
     )
     assert transport.writes == [(4300, [4, 30, 90, 95, 800, 30, 500])]
     assert result["ems_mode"] == 4

@@ -36,7 +36,7 @@ jobs:
         run: python -m ruff check . --output-format=github
 
       - name: Format
-        run: python -m ruff format . --check
+        run: python -m ruff format . --diff
 
   pytest:
     name: Pytest

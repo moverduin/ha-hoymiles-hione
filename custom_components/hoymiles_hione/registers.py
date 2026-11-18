@@ -360,7 +360,9 @@ SETTING_REGISTERS: tuple[Register, ...] = tuple(
 )
 
 # Device information, read once at setup.
-SERIAL_NUMBER = Register("serial_number", Table.HOLDING, 7000, DataType.STRING, length=16)
+SERIAL_NUMBER = Register(
+    "serial_number", Table.HOLDING, 7000, DataType.STRING, length=16
+)
 MODEL_NAME = Register("model_name", Table.HOLDING, 7016, DataType.STRING, length=18)
 INFO_REGISTERS: tuple[Register, ...] = (
     _holding("power_software_version", 7034),

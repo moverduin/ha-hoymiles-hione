@@ -134,7 +134,7 @@ class HiOneConfigFlow(ConfigFlow, domain=DOMAIN):
             errors["base"] = "cannot_connect"
         except HiOneError:
             errors["base"] = "not_supported"
-        except Exception:
+        except Exception:  # noqa: BLE001 - surface any unexpected error as "unknown"
             LOGGER.exception("Unexpected error while connecting")
             errors["base"] = "unknown"
         else:

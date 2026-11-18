@@ -13,6 +13,7 @@ ignore = [
     "ISC001", # incompatible with formatter
     "TRY003", # long exception messages are useful for Modbus errors
     "EM101",  # string literals in exceptions
+    "CPY001", # no per-file copyright headers; see LICENSE
 ]
 
 [lint.per-file-ignores]
@@ -21,6 +22,11 @@ ignore = [
     "PLR2004", # magic values in tests are fine
     "SLF001",  # tests may touch private members
     "ANN001",  # fixtures and parametrised args need no annotations
+    "ANN002",
+    "ANN003",
+    "ARG001",  # fixtures requested only for their side effect
+    "TC002",
+    "TC003",
     "D103",
 ]
 
