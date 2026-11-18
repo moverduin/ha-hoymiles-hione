@@ -40,9 +40,7 @@ SELECT = "select.hoymiles_hione_ems_mode"
 def transport() -> Generator[FakeTransport]:
     """Patch the Modbus client with an in-memory fake."""
     fake = FakeTransport()
-    with patch(
-        "custom_components.hoymiles_hione.HiOneModbusClient", return_value=fake
-    ):
+    with patch("custom_components.hoymiles_hione.HiOneModbusClient", return_value=fake):
         yield fake
 
 

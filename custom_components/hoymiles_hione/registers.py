@@ -484,9 +484,7 @@ def decode_faults(values: dict[str, int | float | str | None]) -> list[str] | No
             continue
         seen = True
         faults.extend(
-            table.get(bit, f"{key} bit {bit}")
-            for bit in range(32)
-            if bits & (1 << bit)
+            table.get(bit, f"{key} bit {bit}") for bit in range(32) if bits & (1 << bit)
         )
     return faults if seen else None
 

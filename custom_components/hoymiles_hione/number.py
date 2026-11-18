@@ -116,7 +116,5 @@ class HiOneNumber(HiOneEntity, NumberEntity):
         description = self.entity_description
         await async_write(
             entry,
-            lambda: description.writer(
-                entry.runtime_data.api, description.key, value
-            ),
+            lambda: description.writer(entry.runtime_data.api, description.key, value),
         )
