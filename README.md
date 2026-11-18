@@ -16,8 +16,8 @@ automations.
 > "Hoymiles" and "HiOne" are trademarks of their respective owner.
 
 > [!IMPORTANT]
-> **Beta.** The register map is verified on a real HiOne, but this integration is new. Please
-> [report](https://github.com/moverduin/ha-hoymiles-hione/issues/new/choose) what works and what does not.
+> This integration is new. The register map is verified on a real HiOne; please
+> [report](https://github.com/moverduin/ha-hoymiles-hione/issues/new/choose) what works on your hardware and what does not.
 
 ## Features
 
