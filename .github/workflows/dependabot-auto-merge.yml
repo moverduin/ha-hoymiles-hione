@@ -1,7 +1,8 @@
 name: Dependabot auto-merge
 
-# Patch and minor dependency updates are merged automatically once the required
-# checks (Ruff, Pytest, Hassfest, HACS) pass. Major updates wait for a maintainer.
+# Patch and minor dependency updates (and hassfest commit bumps) are merged
+# automatically once the required checks (Ruff, Pytest, Hassfest, HACS) pass.
+# Major updates wait for a maintainer.
 
 on: pull_request
 
@@ -21,15 +22,31 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable auto-merge for patch and minor updates
-        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+      # hassfest is pinned to a commit on Home Assistant's master branch. Dependabot
+      # cannot derive a semver change from commit hashes and reports such bumps as
+      # major, so they are treated as routine updates.
+      - name: Decide
+        id: decide
+        env:
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+          DEPENDENCIES: ${{ steps.metadata.outputs.dependency-names }}
+        run: |
+          if [ "$UPDATE_TYPE" != "version-update:semver-major" ] \
+             || [ "$DEPENDENCIES" = "home-assistant/actions/hassfest" ]; then
+            echo "auto=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "auto=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Enable auto-merge for routine updates
+        if: steps.decide.outputs.auto == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
         run: gh pr merge --auto --squash "$PR_URL"
 
       - name: Ask for review of major updates
-        if: steps.metadata.outputs.update-type == 'version-update:semver-major'
+        if: steps.decide.outputs.auto != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}

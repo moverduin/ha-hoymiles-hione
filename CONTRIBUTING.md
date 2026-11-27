@@ -95,7 +95,8 @@ file. If you add a language, translate all keys of `en.json`.
 
 Dependabot opens one grouped pull request per week for GitHub Actions and one for Python
 packages. Patch and minor updates are merged automatically once the required checks (Ruff,
-Pytest, Hassfest, HACS) pass; major updates get a comment and wait for manual review. If a
+Pytest, Hassfest, HACS) pass; major updates get a comment and wait for manual review. Updates of
+the hassfest action (pinned to a commit, so Dependabot cannot classify them) are treated as routine. If a
 Dependabot pull request is red because it is out of date, comment `@dependabot rebase`.
 
 ## Releasing (maintainers)
